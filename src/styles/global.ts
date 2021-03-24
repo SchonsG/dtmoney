@@ -3,16 +3,17 @@ import { createGlobalStyle } from 'styled-components'
 export const GlobalStyle = createGlobalStyle `
 
   :root {
-    --background: #f0f2F5
-    --shape: #FFFFFF
+    --background: #f0f2F5;
+    --shape: #FFFFFF;
 
-    --red: #E52E4D
-    --blue: #5429CC
+    --green: #33CC95;
+    --red: #E52E4D;
+    --blue: #5429CC;
 
-    --blue-light: #6933FF
+    --blue-light: #6933FF;
 
-    --text-title: #363F5F
-    --text-body: #969CB3
+    --text-title: #363F5F;
+    --text-body: #969CB3;
   }
 
   * {
