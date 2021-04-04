@@ -1,18 +1,20 @@
 import { FormEvent, useState } from 'react';
 import Modal from 'react-modal';
+import { ToastContainer, toast } from 'react-toastify';
 import closeImg from '../../assets/close.svg';
 import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
 import { useTransactions } from '../../hooks/useTransactions';
 import { Container, RadioBox, TransactionTypeContainer } from './styles';
+import 'react-toastify/dist/ReactToastify.css';
 
 type NewTransactionModalProps = {
   isOpen: boolean;
   onRequestClose: () => void;
 }
 
-export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModalProps) {
-  const { createTransaction }  = useTransactions()
+export function NewTransactionModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+  const { createTransaction } = useTransactions()
 
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState(0);
@@ -21,6 +23,11 @@ export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModa
 
   async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
+
+    if (!(title && amount && category && type)) {
+      toast.error('Faltam dados obrigatórios 🧨');
+      return;
+    }
 
     await createTransaction({
       title,
@@ -34,34 +41,37 @@ export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModa
     setCategory('');
     setType('deposit');
     onRequestClose();
+
+    toast.success('Lançamento gravado com sucesso! 🚀');
+
   }
 
   return (
-    
-    <Modal
+    <>
+      <Modal
         isOpen={isOpen}
         onRequestClose={onRequestClose}
         overlayClassName="react-modal-overlay"
         className="react-modal-content"
       >
 
-        <button 
-          type="button" 
-          onClick={onRequestClose} 
+        <button
+          type="button"
+          onClick={onRequestClose}
           className="react-modal-close">
-            <img src={closeImg} alt="Fechar modal" />
+          <img src={closeImg} alt="Fechar modal" />
         </button>
 
         <Container onSubmit={handleCreateNewTransaction}>
           <h2>Cadastrar transação</h2>
 
-          <input 
+          <input
             placeholder="Título"
             value={title}
             onChange={event => setTitle(event.target.value)}
           />
 
-          <input 
+          <input
             type="number"
             placeholder="Valor"
             value={amount}
@@ -69,23 +79,23 @@ export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModa
           />
 
           <TransactionTypeContainer>
-            <RadioBox 
+            <RadioBox
               type="button"
-              onClick={() => {setType('deposit')}}
+              onClick={() => { setType('deposit') }}
               isActive={type === 'deposit'}
               activeColor="green"
             >
-              <img src={incomeImg} alt="Entrada"/>
+              <img src={incomeImg} alt="Entrada" />
               <span>Entrada</span>
             </RadioBox>
 
-            <RadioBox 
+            <RadioBox
               type="button"
-              onClick={() => {setType('withdraw')}}
+              onClick={() => { setType('withdraw') }}
               isActive={type === 'withdraw'}
               activeColor="red"
             >
-              <img src={outcomeImg} alt="Saída"/>
+              <img src={outcomeImg} alt="Saída" />
               <span>Saída</span>
             </RadioBox>
           </TransactionTypeContainer>
@@ -98,9 +108,12 @@ export function NewTransactionModal({isOpen, onRequestClose}: NewTransactionModa
 
           <button type="submit">Cadastrar</button>
 
+
+
         </Container>
-    </Modal>
+      </Modal>
 
-
+      <ToastContainer />
+    </>
   )
 }
